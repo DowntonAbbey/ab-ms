@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chengdu.hsk.abms.mapper.MerchInfoMapper">
+    <sql id="BaseColumn">
+        ID,MERCH_NO,MERCH_NAME,SIMPLE_NAME,CREATE_DATE,TRADE_ACC_NUMBER,TRADE_ACC_NAME,TRADE_ACC_TYPE
+    </sql>
+    <resultMap id="MerchInfoMap" type="com.chengdu.hsk.abms.pojo.MerchInfo">
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <id column="MERCH_NO" property="merchNo" jdbcType="VARCHAR"/>
+        <id column="MERCH_NAME" property="merchName" jdbcType="VARCHAR"/>
+        <id column="CREATE_DATE" property="createDate" jdbcType="DATE"/>
+        <id column="TRADE_ACC_NUMBER" property="tradeAccountNumber" jdbcType="VARCHAR"/>
+        <id column="TRADE_ACC_NAME" property="tradeAccountName" jdbcType="VARCHAR"/>
+        <id column="TRADE_ACC_TYPE" property="tradeAccountType" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="findMerchById" resultMap="MerchInfoMap" parameterType="java.lang.Integer">
+        SELECT
+          <include refid="BaseColumn"/>
+        FROM MERCH_INFO
+        WHERE id = #{id}
+    </select>
+
+    <insert id="addMerch" parameterType="MerchInfo">
+         INSERT INTO MERCH_INFO (<include refid="BaseColumn"/>) values (#{id},#{merchNo},#{merchName},#{simpleName},#{createDate},
+        #{tradeAccountNumber},#{tradeAccountName},#{tradeAccountType})
+    </insert>
+
+    <insert id="addMerchBatch" parameterType="java.util.List">
+        <foreach collection="list" open="" separator=";"  close="" item="item" >
+          INSERT INTO MERCH_INFO (<include refid="BaseColumn"/>) values
+            (
+            #{item.id},
+            #{item.merchNo},
+            #{item.merchName},
+            #{item.simpleName},
+            #{item.createDate},
+            #{item.tradeAccountNumber},
+            #{item.tradeAccountName},
+            #{item.tradeAccountType}
+            )
+        </foreach>
+    </insert>
+
+    <delete id="deleteMerchBatch">
+         DELETE FROM MERCH_INFO WHERE 1=1
+    </delete>
+
+    <select id="countMerch" resultType="java.lang.Integer">
+        select count(ID) from MERCH_INFO
+    </select>
+
+    <update id="updateMerchBatch1" parameterType="java.util.List">
+        <foreach collection="list" item="item" open="" separator=";" close="">
+            update MERCH_INFO
+            <set>
+                TRADE_ACC_TYPE = #{item.tradeAccountType}
+            </set>
+            <where>
+                TRADE_ACC_NUMBER = #{item.tradeAccountNumber}
+            </where>
+        </foreach>
+    </update>
+
+    <update id="updateMerchBatch2" parameterType="java.util.List">
+        UPDATE MERCH_INFO
+        <trim prefix="SET" suffixOverrides=",">
+            <trim prefix="TRADE_ACC_TYPE = CASE" suffix="END,">
+                <foreach collection="list" item="item">
+                    WHEN TRADE_ACC_NUMBER = #{item.tradeAccountNumber} THEN #{item.tradeAccountType}
+                </foreach>
+            </trim>
+        </trim>
+        <where>
+            TRADE_ACC_NUMBER IN
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item.tradeAccountNumber}
+            </foreach>
+        </where>
+    </update>
+</mapper>
