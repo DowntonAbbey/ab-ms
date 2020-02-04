@@ -3,10 +3,16 @@ package com.chengdu.hsk.abms.controller;
 import com.chengdu.hsk.abms.pojo.MerchInfo;
 import com.chengdu.hsk.abms.service.MerchInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -124,4 +130,59 @@ public class MerchController {
         resultMap.put("updteNumber",updateNumber);
         return resultMap;
     }
+    @GetMapping("/test")
+    public void sayHello(@RequestParam("filePath") String filePath, HttpServletRequest req, HttpServletResponse res){
+        File f = new File(filePath);
+        byte [] a = new byte[1024*8];
+        StringBuilder result = new StringBuilder();
+        int n = -1;
+        long startTime = (new Date()).getTime();
+        OutputStream out;
+        try{
+            out = res.getOutputStream();
+            InputStream in = new FileInputStream(f);
+            BufferedInputStream bfi = new BufferedInputStream(in);
+            while((n = in.read(a))!=-1){
+                out.write(a,0,n);
+                out.flush();
+            }
+            bfi.close();
+            in.close();
+        }catch (IOException e){
+
+        }
+        long endTime = (new Date()).getTime();
+        long useTime = endTime - startTime;
+        System.out.println("userTime:"+useTime);
+    }
+
+    @GetMapping("/test2")
+    public Map test2(@RequestParam("filePath") String filePath){
+        File f = new File(filePath);
+        char [] a = new char[100];
+        StringBuilder result = new StringBuilder();
+        String s = null;
+        long startTime = (new Date()).getTime();
+        try{
+            Reader reader = new FileReader(f);
+            BufferedReader bf = new BufferedReader(reader);
+            while((s=bf.readLine())!= null){
+                result.append(s);
+            }
+            bf.close();
+            reader.close();
+        }catch (IOException e){
+
+        }
+        long endTime = (new Date()).getTime();
+        long useTime = endTime - startTime;
+        System.out.println("useTime:"+useTime);
+        Map resultMap = new HashMap();
+        resultMap.put("useTime",useTime);
+        resultMap.put("result",result);
+        return  resultMap;
+    }
+
+
+
 }
