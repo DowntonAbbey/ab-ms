@@ -2,8 +2,9 @@ package com.chengdu.hsk.abms.controller;
 
 import com.chengdu.hsk.abms.pojo.MerchInfo;
 import com.chengdu.hsk.abms.service.MerchInfoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,9 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
-import java.util.logging.Logger;
 
 
 /**
@@ -23,14 +22,17 @@ import java.util.logging.Logger;
  * @Description:
  */
 @RestController
+@Api(value = "商户信息查询")
 public class MerchController {
 
     @Autowired
     private MerchInfoService merchInfoService;
 
     @RequestMapping("findMerchById")
-    public MerchInfo findMerchById(@RequestParam("id") Integer id){
-        return merchInfoService.findMerchById(id);
+    @ApiOperation(value="根据id获取商户信息", notes="test: 仅1和2有正确返回")
+    public String findMerchById(@RequestParam("id") Integer id){
+//        return merchInfoService.findMerchById(id);
+        return "test";
     }
 
     @RequestMapping("/addMerch")

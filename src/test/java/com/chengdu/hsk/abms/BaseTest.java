@@ -3,23 +3,17 @@ package com.chengdu.hsk.abms;
 import com.chengdu.hsk.abms.Test.Manager;
 import com.chengdu.hsk.abms.Test.Staff;
 import com.chengdu.hsk.abms.Test.User;
-import com.chengdu.hsk.abms.pojo.Size;
 import org.junit.Test;
 import org.springframework.util.StringUtils;
 
-import javax.swing.*;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
+import java.lang.annotation.Annotation;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -103,4 +97,55 @@ public class BaseTest {
         bufferedReader.close();
 
     }
+
+    @Test
+    public void test10(){
+        String [] strArray = {"A","B","C"};
+        List<String> strList = Arrays.asList(strArray);
+        System.out.println("strList:"+strList.toString());
+        HashSet strSet = new HashSet(strList);
+        System.out.println("strSet:"+strSet);
+        String str = String.join(",",strSet);
+        System.out.println("Str:"+str);
+    }
+
+
+    @Test
+    public void test12(){
+        User user = new User();
+        user.setUserId(1);
+        user.setUserName("tom");
+        System.out.println(user.toString());
+
+        try {
+            Class<?> userClass = Class.forName("com.chengdu.hsk.abms.Test.User");
+            Annotation[] declaredAnnotations = userClass.getDeclaredAnnotations();
+            List<Annotation> annotations = Arrays.asList(declaredAnnotations);
+            for(Annotation annotation:annotations){
+                System.out.println(annotation.annotationType().getCanonicalName());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    @Test
+    public void test13(){
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        for(int i=0;i<5;i++){
+            executorService.submit(()->{
+                System.out.println("current thread name "+Thread.currentThread().getName());
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Object object = null;
+                System.out.println("result:"+object.toString());
+            });
+        }
+    }
+
+
 }
