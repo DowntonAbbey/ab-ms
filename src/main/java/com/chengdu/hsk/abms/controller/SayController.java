@@ -25,7 +25,7 @@ public class SayController {
             return "张三丰";
         }
         else if(userNumber == 2){
-            return "慕容复";
+            return "慕容复1";
         }
         else{
             return "未知1";
